@@ -12,8 +12,9 @@
         <ul class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <li v-for="song in music" :key="song.id"
                 class="p-4 shadow-md rounded-lg transition-shadow duration-300 animate-card-slide-up dark:bg-gray-900 dark:text-gray-300 dark:hover:border-purple-600 dark:border dark:border-gray-800 dark:hover:shadow-lg card-content">
-                <h3 class="text-xl font-bold dark:text-purple-400 animate-content-slide-in"
-                    style="animation-delay: 0.2s;">{{ song.title }}</h3>
+                    <h3 class="text-xl font-bold dark:text-purple-400 animate-content-slide-in"
+                    style="animation-delay: 0.2s;">{{ song.title }}
+                            </h3>
                 <p class="text-gray-600 dark:text-gray-400 animate-content-slide-in" style="animation-delay: 0.4s;">
                     {{ song.artist }}
                     <br>
