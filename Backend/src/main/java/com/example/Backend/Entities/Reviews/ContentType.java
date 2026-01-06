@@ -1,5 +1,5 @@
 package com.example.Backend.Entities.Reviews;
 
 public enum ContentType {
-    MOVIE, MUSIC
+    MOVIE, MUSIC, PLAYLIST
 }

@@ -3,6 +3,7 @@ package com.example.Backend.Entities.Reviews;
 
 import com.example.Backend.Security.DTOs.Review.ReviewRequest;
 import com.example.Backend.Security.DTOs.Review.ReviewResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<ReviewResponse> addReview(Principal principal, @RequestBody ReviewRequest request) {
+    public ResponseEntity<ReviewResponse> addReview(Principal principal, @Valid @RequestBody ReviewRequest request) {
         return ResponseEntity.ok(reviewService.addReview(principal.getName(), request));
     }
 

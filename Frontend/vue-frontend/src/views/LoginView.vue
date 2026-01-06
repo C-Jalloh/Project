@@ -1,81 +1,87 @@
 <template>
-    <div class="max-w-md mx-auto p-6 bg-gray-800 rounded-lg shadow-md ">
-      <h2 class="text-2xl font-semibold text-center animate-content-slide-in" style="animation-delay: 0.2s;" >Login</h2>
-      <form @submit.prevent="login" class="mt-4 card-content">
-        <input v-model="username" placeholder="Username" class="input-field animate-content-slide-in" style="animation-delay: 0.4s;" required />
-        <input v-model="password" type="password" placeholder="Password" class="input-field animate-content-slide-in" style="animation-delay: 0.4s;" required />
-        <button type="submit" class="btn animate-content-slide-in" style="animation-delay: 0.6s;">Login</button>
-      </form>
-      <p v-if="errorMessage" class="text-red-500 text-center mt-2">{{ errorMessage }}</p>
+  <div class="min-h-screen flex items-center justify-center p-6">
+    <router-link to="/" class="absolute top-6 left-6 z-50 glass-button px-4 py-2 flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to Home
+    </router-link>
+
+    <div class="max-w-md mx-auto p-12 liquid-glass rounded-[3rem] shadow-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 border border-white/20 animate-fade-in">
+      <h2 class="text-3xl font-bold text-center mb-8" style="color: var(--text-main)">Login</h2>
+    
+    <form @submit.prevent="login" class="space-y-6">
+      <div class="space-y-2">
+        <label class="text-sm font-medium ml-1 opacity-70">Username</label>
+        <input 
+          v-model="username" 
+          placeholder="Enter your username" 
+          class="glass-input" 
+          required 
+        />
+      </div>
+      
+      <div class="space-y-2">
+        <label class="text-sm font-medium ml-1 opacity-70">Password</label>
+        <input 
+          v-model="password" 
+          type="password" 
+          placeholder="Enter your password" 
+          class="glass-input" 
+          required 
+        />
+      </div>
+
+      <button 
+        type="submit" 
+        class="glass-button-primary w-full py-3 text-lg mt-4"
+      >
+        Login
+      </button>
+    </form>
+    
+    <p v-if="errorMessage" class="text-red-400 text-center mt-4 text-sm font-medium">{{ errorMessage }}</p>
+    
+    <div class="mt-8 pt-6 border-t border-white/10 text-center">
+      <p class="text-sm opacity-70">
+        Don't have an account? 
+        <router-link to="/register" class="font-bold hover:underline" style="color: var(--accent-color)">
+          Register here
+        </router-link>
+      </p>
     </div>
-  </template>
-  
-  <script>
-  import apiClient from "../api/axios";
-  
-  export default {
-    data() {
-      return { username: "", password: "", errorMessage: "" };
+  </div>
+</template>
+
+<script>
+import { useUserStore } from "../store/user";
+
+export default {
+  data() {
+    return { username: "", password: "", errorMessage: "" };
+  },
+  methods: {
+    async login() {
+      const userStore = useUserStore();
+      try {
+        await userStore.login(this.username, this.password);
+        this.$router.push("/movies");
+      } catch (error) {
+        this.errorMessage = "Invalid credentials!";
+      }
     },
-    methods: {
-      async login() {
-        try {
-          const response = await apiClient.post("/auth/login", { username: this.username, password: this.password });
-          localStorage.setItem("token", response.data.token);
-          this.$router.push("/movies");
-        } catch (error) {
-          this.errorMessage = "Invalid credentials!";
-        }
-      },
-    },
-  };
-  </script>
-  
-  <style scoped>
-  .input-field {
-    width: 100%;
-    padding: 10px;
-    margin-top: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  .btn {
-    width: 100%;
-    background-color: #4f46e5;
-    color: white;
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 4px;
-    font-weight: bold;
-  }
-  @keyframes cardSlideUp {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  },
+};
+</script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
 }
-@keyframes contentSlideIn {
-  from {
-        opacity: 0;
-        transform: translateX(-100%);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-.animate-card-slide-up{
-    animation: cardSlideUp 1.2s ease-out forwards;
-}
-.animate-content-slide-in{
-    animation: contentSlideIn 1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-}
-.card-content > * {
-    opacity: 0;
-}
-  </style>
+</style>
   

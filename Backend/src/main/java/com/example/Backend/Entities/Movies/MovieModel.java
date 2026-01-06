@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "movies")
@@ -21,16 +23,49 @@ public class MovieModel {
     private String title;
 
     @Column(length = 100)
-    private String genre;
+    private String genre; // Keeping for backward compatibility
 
     @Column(length = 100)
-    private String director;
+    private String director; // Keeping for backward compatibility
 
-    private int releaseYear;
-    private int duration; // in minutes
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "movie_genres",
+        joinColumns = @JoinColumn(name = "movie_id"),
+        inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private Set<GenreModel> genres = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "director_id")
+    private DirectorModel directorEntity;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "movie_actors",
+        joinColumns = @JoinColumn(name = "movie_id"),
+        inverseJoinColumns = @JoinColumn(name = "actor_id")
+    )
+    private Set<ActorModel> actors = new HashSet<>();
+
+    private Integer releaseYear;
+    private Integer duration; // in minutes
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    private Long budget;
+    private Long revenue;
+    private Double popularity;
+    private Double voteAverage;
+    private Integer voteCount;
+
+    @Column(length = 500)
+    private String imageUrl;
+
+    @Column(name = "image_filename", length = 255)
+    private String imageFilename;
+
     @Transient
     private Double rating;
 
@@ -73,19 +108,19 @@ public class MovieModel {
         this.director = director;
     }
 
-    public int getReleaseYear() {
+    public Integer getReleaseYear() {
         return releaseYear;
     }
 
-    public void setReleaseYear(int releaseYear) {
+    public void setReleaseYear(Integer releaseYear) {
         this.releaseYear = releaseYear;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
@@ -95,6 +130,22 @@ public class MovieModel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImageFilename() {
+        return imageFilename;
+    }
+
+    public void setImageFilename(String imageFilename) {
+        this.imageFilename = imageFilename;
     }
 
     public LocalDateTime getCreatedAt() {

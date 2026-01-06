@@ -1,0 +1,6 @@
+# Decision Log
+
+| Date | Decision | Rationale |
+|------|----------|-----------|
+| 2025-12-31 | Implemented comprehensive search and filter functionality for Movies and Music views | Added full-stack search and filter capability maintaining the liquid glass design language. Backend uses Spring Data JPA queries with optional parameters, frontend uses debounced search with reactive filters and visual feedback. The implementation is performant, user-friendly, and consistent with the existing Prism design system. |
+| 2025-12-31 | Redesigned filter UX with animated pill-based interface and global search integration | Replaced local search bars with a global navbar search and created an innovative FilterPills component with cascading animations. The new UX provides: 1) Filter button that reveals category pills sliding from underneath at higher elevation, 2) Category selection shows options sliding from under the selected pill while others retract, 3) Smooth transitions and backdrop for intuitive interaction, 4) Global search in navbar that affects both Movies and Music views through Vue's provide/inject pattern. This creates a more cohesive, elegant user experience aligned with the liquid glass design language. |

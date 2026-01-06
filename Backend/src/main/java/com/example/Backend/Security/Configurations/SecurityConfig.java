@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -25,6 +26,7 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.List;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
@@ -46,6 +48,13 @@ public class SecurityConfig {
         http.csrf((AbstractHttpConfigurer::disable))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/images/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/movies", "/api/movies/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/music", "/api/music/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/playlists/public").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/playlists/{playlistId}").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/playlists/{playlistId}/music").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/playlists/{playlistId}/movies").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -68,8 +77,8 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedOrigins(List.of("http://localhost:5173", "http://127.0.0.1:5173"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);

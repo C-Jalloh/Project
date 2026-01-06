@@ -1,45 +1,43 @@
 <template>
-  <nav class="bg-blue-600 p-4 flex w-full fixed top-0 z-50">
-    <div class="flex items-center justify-center w-1/3">
-        <img src="/src/assets/logo.svg" alt="App Logo" class="h-8 w-8 mr-2">
-        <div class="text-white font-bold text-lg">MyMediaApp</div>
-    </div>
-    <div class="space-x-4 flex items-center justify-center w-2/3">
-      <router-link to="/" class="nav-link">Home</router-link>
-      <router-link to="/movies" class="nav-link">Movies</router-link>
-      <router-link to="/music" class="nav-link">Music</router-link>
-      <router-link to="/playlists" class="nav-link">Playlists</router-link>
-      <button @click="logout" class="nav-link">Logout</button>
-    </div>
-  </nav>
-  <div :class="{'dark': isDarkMode}" class="mt-20 h-full">
-    <router-view />
+  <div class="min-h-screen bg-transparent">
+    <!-- Show MainLayout for authenticated users -->
+    <template v-if="userStore.isAuthenticated">
+      <MainLayout />
+    </template>
+    
+    <!-- Show AuthView for non-authenticated users -->
+    <template v-else>
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
+    </template>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-        isDarkMode: false,
-    };
-},
-  methods: {
-    logout() {
-      localStorage.removeItem("token");
-      this.$router.push("/login");
-    },
-  },
-};
+<script setup>
+import { onMounted } from "vue";
+import { useUserStore } from "./store/user";
+import { useThemeStore } from "./store/theme";
+import MainLayout from "./layouts/MainLayout.vue";
+
+const userStore = useUserStore();
+const themeStore = useThemeStore();
+
+onMounted(() => {
+  themeStore.applyTheme();
+});
 </script>
 
-<style scoped>
-.nav-link {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
 }
-.nav-link:hover {
-  text-decoration: underline;
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

@@ -34,4 +34,16 @@ public class UserRegisterRequest {
     public @NotBlank @Size(min = 6) String getPassword() {
         return password;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

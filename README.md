@@ -1,1 +1,1 @@
-this is my project assigned by Mr Drammeh in the course : Advanced Programming Skills
+this is my project assigned by Mr Jobe in the course : Advanced Application Development

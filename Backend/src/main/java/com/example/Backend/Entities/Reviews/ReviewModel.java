@@ -48,11 +48,11 @@ public class ReviewModel {
         this.contentType = contentType;
     }
 
-    public int getRating() {
+    public Integer getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(Integer rating) {
         this.rating = rating;
     }
 
@@ -80,7 +80,7 @@ public class ReviewModel {
     private ContentType contentType; // Enum for MOVIE or MUSIC
 
     @Column(nullable = false)
-    private int rating; // Between 1 and 5
+    private Integer rating; // Between 1 and 5
 
     @Column(columnDefinition = "TEXT")
     private String reviewText;

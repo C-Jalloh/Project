@@ -4,6 +4,9 @@ import com.example.Backend.Entities.Movies.MovieModel;
 import com.example.Backend.Entities.Movies.MovieRepository;
 import com.example.Backend.Entities.Music.MusicModel;
 import com.example.Backend.Entities.Music.MusicRepository;
+import com.example.Backend.Entities.Playlists.PlaylistModel;
+import com.example.Backend.Entities.Playlists.PlaylistRepository;
+import com.example.Backend.Entities.Users.Role;
 import com.example.Backend.Entities.Users.UserModel;
 import com.example.Backend.Entities.Users.UserRepository;
 import com.example.Backend.Security.DTOs.Review.ReviewRequest;
@@ -20,12 +23,14 @@ public class ReviewService {
     private final UserRepository userRepository;
     private final MovieRepository movieRepository;
     private final MusicRepository musicRepository;
+    private final PlaylistRepository playlistRepository;
 
-    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, MovieRepository movieRepository, MusicRepository musicRepository) {
+    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, MovieRepository movieRepository, MusicRepository musicRepository, PlaylistRepository playlistRepository) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.movieRepository = movieRepository;
         this.musicRepository = musicRepository;
+        this.playlistRepository = playlistRepository;
     }
 
     public ReviewResponse addReview(String username, ReviewRequest request) {
@@ -73,6 +78,11 @@ public class ReviewService {
             Double averageRating = getAverageRating(contentId,contentType);
             music.setRating(averageRating);
             musicRepository.save(music);
+        } else if(contentType.equals(ContentType.PLAYLIST)){
+            PlaylistModel playlist = playlistRepository.findById(contentId).orElseThrow(() -> new RuntimeException("Playlist not found"));
+            Double averageRating = getAverageRating(contentId,contentType);
+            playlist.setRating(averageRating);
+            playlistRepository.save(playlist);
         }
     }
 
@@ -93,7 +103,10 @@ public class ReviewService {
         ReviewModel review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new RuntimeException("Review not found"));
 
-        if (!review.getUser().getUsername().equals(username)) {
+        UserModel user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!review.getUser().getUsername().equals(username) && user.getRole() != Role.ADMIN) {
             throw new RuntimeException("You can only delete your own reviews!");
         }
 

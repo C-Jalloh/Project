@@ -4,9 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "music")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class MusicModel {
@@ -19,91 +23,38 @@ public class MusicModel {
     private String title;
 
     @Column(length = 100)
-    private String artist;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getArtist() {
-        return artist;
-    }
-
-    public void setArtist(String artist) {
-        this.artist = artist;
-    }
-
-    public String getAlbum() {
-        return album;
-    }
-
-    public void setAlbum(String album) {
-        this.album = album;
-    }
-
-    public String getGenre() {
-        return genre;
-    }
-
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    public int getReleaseYear() {
-        return releaseYear;
-    }
-
-    public void setReleaseYear(int releaseYear) {
-        this.releaseYear = releaseYear;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-    @Transient
-    private Double rating;
-
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
-
-    public Double getRating() {
-        return rating;
-    }
+    private String artist; // Keeping for backward compatibility
 
     @Column(length = 100)
-    private String album;
+    private String album; // Keeping for backward compatibility
 
     @Column(length = 100)
-    private String genre;
+    private String genre; // Keeping for backward compatibility
 
-    private int releaseYear;
-    private int duration; // in seconds
+    private Integer releaseYear;
+    private Integer duration; // in seconds
+
+    @Column(length = 500)
+    private String imageUrl;
+
+    @Column(name = "image_filename", length = 255)
+    private String imageFilename;
+
+    @ManyToOne
+    @JoinColumn(name = "album_id")
+    private AlbumModel albumEntity;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+        name = "music_to_genres",
+        joinColumns = @JoinColumn(name = "music_id"),
+        inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private Set<MusicGenreModel> genres = new HashSet<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Transient
+    private Double rating;
 }

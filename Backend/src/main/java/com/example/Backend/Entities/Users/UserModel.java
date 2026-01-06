@@ -11,6 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserModel implements UserDetails {
@@ -32,61 +34,24 @@ public class UserModel implements UserDetails {
     @Column(nullable = false)
     private Role role = Role.USER;
 
+    @Column(name = "profile_picture")
+    private String profilePicture;
+
+    @Column(length = 500)
+    private String bio;
+
+    @Column(name = "theme_preference")
+    private String themePreference = "light";
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    public Long getId() {
+        return id;
+    }
+
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * Indicates whether the user's account has expired. An expired account cannot be
-     * authenticated.
-     *
-     * @return <code>true</code> if the user's account is valid (ie non-expired),
-     * <code>false</code> if no longer valid (ie expired)
-     */
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    /**
-     * Indicates whether the user is locked or unlocked. A locked user cannot be
-     * authenticated.
-     *
-     * @return <code>true</code> if the user is not locked, <code>false</code> otherwise
-     */
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    /**
-     * Indicates whether the user's credentials (password) has expired. Expired
-     * credentials prevent authentication.
-     *
-     * @return <code>true</code> if the user's credentials are valid (ie non-expired),
-     * <code>false</code> if no longer valid (ie expired)
-     */
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    /**
-     * Indicates whether the user is enabled or disabled. A disabled user cannot be
-     * authenticated.
-     *
-     * @return <code>true</code> if the user is enabled, <code>false</code> otherwise
-     */
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 
     public void setUsername(String username) {
@@ -101,20 +66,6 @@ public class UserModel implements UserDetails {
         this.email = email;
     }
 
-    /**
-     * Returns the authorities granted to the user. Cannot return <code>null</code>.
-     *
-     * @return the authorities, sorted by natural key (never <code>null</code>)
-     */
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -127,15 +78,66 @@ public class UserModel implements UserDetails {
         this.role = role;
     }
 
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getThemePreference() {
+        return themePreference;
+    }
+
+    public void setThemePreference(String themePreference) {
+        this.themePreference = themePreference;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    @Override
+    public String getUsername() {
+        return username;
     }
-}
 
-enum Role {
-    USER, ADMIN
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:8080/api", // Adjust if backend runs on a different port
+  baseURL: "http://127.0.0.1:8080/api", // Using IP instead of localhost to avoid resolution issues
   headers: {
     "Content-Type": "application/json",
   },

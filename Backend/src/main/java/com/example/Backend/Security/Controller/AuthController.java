@@ -5,6 +5,7 @@ import com.example.Backend.Security.DTOs.Authentication.AuthRequest;
 import com.example.Backend.Security.DTOs.Authentication.AuthResponse;
 import com.example.Backend.Security.DTOs.Authentication.UserRegisterRequest;
 import com.example.Backend.Security.Service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +20,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserRegisterRequest request) {
+    public ResponseEntity<String> register(@Valid @RequestBody UserRegisterRequest request) {
         return ResponseEntity.ok(authService.registerUser(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
         return ResponseEntity.ok(authService.loginUser(request));
     }
 }

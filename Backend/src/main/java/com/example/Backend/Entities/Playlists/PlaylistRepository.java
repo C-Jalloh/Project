@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface PlaylistRepository extends JpaRepository<PlaylistModel, Long> {
     List<PlaylistModel> findByUser(UserModel user);
+    List<PlaylistModel> findByIsPublicTrue();
 }
 

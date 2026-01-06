@@ -2,7 +2,9 @@ package com.example.Backend.Entities.Playlists;
 
 
 import com.example.Backend.Entities.Music.MusicModel;
+import com.example.Backend.Entities.Movies.MovieModel;
 import com.example.Backend.Entities.Users.UserModel;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,6 +30,22 @@ public class PlaylistModel {
     @Column(nullable = false, length = 100)
     private String name;
 
+    @Column(name = "is_public", nullable = false)
+    private boolean isPublic = false;
+
+    @JsonProperty("isPublic")
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    @JsonProperty("isPublic")
+    public void setPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    @Column(nullable = false)
+    private Double rating = 0.0;
+
     @ManyToMany
     @JoinTable(
             name = "playlist_music",
@@ -35,6 +53,14 @@ public class PlaylistModel {
             inverseJoinColumns = @JoinColumn(name = "music_id")
     )
     private List<MusicModel> songs;
+
+    @ManyToMany
+    @JoinTable(
+            name = "playlist_movies",
+            joinColumns = @JoinColumn(name = "playlist_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id")
+    )
+    private List<MovieModel> movies;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -71,11 +97,27 @@ public class PlaylistModel {
         this.songs = songs;
     }
 
+    public List<MovieModel> getMovies() {
+        return movies;
+    }
+
+    public void setMovies(List<MovieModel> movies) {
+        this.movies = movies;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 }
